@@ -1,10 +1,12 @@
 const asyncHendler = require("express-async-handler");
+const Goal = require("../models/goalModel.js");
 //@ desc GET goals
 //@ route GET /api/goals
 //@acces Private
 
 const getGoals = asyncHendler(async (req, res) => {
-  res.status(200).json({ message: "get goal" });
+  const goals = await Goal.find();
+  res.status(200).json(goals);
 });
 
 //@ desc put goals
@@ -12,7 +14,17 @@ const getGoals = asyncHendler(async (req, res) => {
 //@acces Private
 
 const putGoals = asyncHendler(async (req, res) => {
-  res.status(200).json({ message: `update goal nr ${req.params.id}` });
+  const goal = await Goal.findById(req.params.id);
+
+  if (!goal) {
+    res.status(400);
+    throw new Error("Goal not found");
+  }
+
+  const updatedGoal = await Goal.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.status(200).json(updatedGoal);
 });
 
 //@ desc POST goals
@@ -24,7 +36,10 @@ const postGoals = asyncHendler(async (req, res) => {
     res.status(400);
     throw new Error("pease add a trext field");
   }
-  res.status(200).json({ message: "set goal" });
+  const goal = await Goal.create({
+    text: req.body.text,
+  });
+  res.status(200).json(goal);
 });
 
 //@ desc Delete goals
@@ -32,7 +47,16 @@ const postGoals = asyncHendler(async (req, res) => {
 //@acces Private
 
 const deleteGoal = asyncHendler(async (req, res) => {
-  res.status(200).json({ message: `deleted goal nr ${req.params.id}` });
+  const goal = await Goal.findById(req.params.id);
+
+  if (!goal) {
+    res.status(400);
+    throw new Error("Goal not found");
+  }
+
+  await Goal.findByIdAndRemove(goal);
+
+  res.status(200).json({ id: req.params.id });
 });
 
 module.exports = { getGoals, putGoals, postGoals, deleteGoal };
