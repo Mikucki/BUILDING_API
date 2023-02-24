@@ -20,7 +20,8 @@ const putGoals = (req, res) => {
 
 const postGoals = (req, res) => {
   if (!req.body.text) {
-    res.status(400).json({ message: "Please add text filed" });
+    res.status(400);
+    throw new Error("pease add a trext field");
   }
   res.status(200).json({ message: "set goal" });
 };
