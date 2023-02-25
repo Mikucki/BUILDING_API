@@ -5,7 +5,14 @@ const Goal = require("../models/goalModel.js");
 //@acces Private
 
 const getGoals = asyncHendler(async (req, res) => {
-  const goals = await Goal.find();
+  if (!req.body.text) {
+    res.status(401);
+    throw new Error("add a text field stupiddd ");
+  }
+  const goals = await Goal.find({
+    user: req.user.id,
+    text: req.user.id,
+  });
   res.status(200).json(goals);
 });
 
@@ -38,6 +45,7 @@ const postGoals = asyncHendler(async (req, res) => {
   }
   const goal = await Goal.create({
     text: req.body.text,
+    user: req.user.id,
   });
   res.status(200).json(goal);
 });
