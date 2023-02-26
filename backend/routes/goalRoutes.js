@@ -2,17 +2,17 @@ const express = require("express");
 const router = express.Router();
 const {
   getGoals,
-  putGoals,
-  postGoals,
+  setGoal,
+  updateGoal,
   deleteGoal,
 } = require("../controllers/goalController.js");
 const protect = require("../middleware/authMiddleware.js");
 
 router.get("/", protect, getGoals);
 
-router.post("/", protect, postGoals);
+router.post("/", protect, setGoal);
 
-router.put("/:id", protect, putGoals);
+router.put("/:id", protect, updateGoal);
 
 router.delete("/:id", protect, deleteGoal);
 
